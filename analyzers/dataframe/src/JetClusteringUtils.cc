@@ -130,6 +130,19 @@ namespace FCCAnalyses {
       return result;
     }
 
+    recoilBuilder::recoilBuilder(float arg_sqrts) : m_sqrts(arg_sqrts) {};
+    double recoilBuilder::operator() (ROOT::VecOps::RVec<fastjet::PseudoJet> in) {
+      double result;
+      auto recoil_p4 = TLorentzVector(0, 0, 0, m_sqrts);
+      for (auto & v1: in) {
+	TLorentzVector tv1;
+	tv1.SetPxPyPzE(v1.px(), v1.py(), v1.pz(), v1.e());
+	recoil_p4 -= tv1;
+      }
+      result = recoil_p4.M();
+      return result;
+    }
+
     JetClustering::FCCAnalysesJet initialise_FCCAnalysesJet() {
       JetClustering::FCCAnalysesJet result;
       std::vector<fastjet::PseudoJet> jets;

@@ -9,6 +9,7 @@
 #include "fastjet/JetDefinition.hh"
 
 #include "TRandom3.h"
+#include "TLorentzVector.h"
 
 /** Jet clustering utilities interface.
 This represents a set functions and utilities to perfom jet clustering from a list of.
@@ -83,6 +84,13 @@ namespace FCCAnalyses {
 
     /** Get jet theta. Details. */
     ROOT::VecOps::RVec<float> get_theta(const ROOT::VecOps::RVec<fastjet::PseudoJet>& in);
+
+
+    struct recoilBuilder {
+      recoilBuilder(float arg_sqrts);
+      float m_sqrts = 240.0;
+      double operator() (ROOT::VecOps::RVec<fastjet::PseudoJet> in);
+    };
 
     ///Internal methods
     JetClustering::FCCAnalysesJet initialise_FCCAnalysesJet();

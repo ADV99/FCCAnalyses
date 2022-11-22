@@ -104,21 +104,43 @@ namespace ReconstructedParticle2Track{
         double a = - rp.charge * Bz * cSpeed;
         double pt = p.Pt();
         double C = a/(2 * pt);
+	//std::cout << "-> C: " << C << std::endl;
         double r2 = x(0) * x(0) + x(1) * x(1);
         double cross = x(0) * p(1) - x(1) * p(0);
         double T = TMath::Sqrt(pt * pt - 2 * a * cross + a * a * r2);
-        double D;
+	//std::cout << "-> T: " << T << std::endl;
+	double D;
         if (pt < 10.0) D = (T - pt) / a;
         else D = (-2 * cross + a * r2) / (T + pt);
+	//std::cout << "-> D: " << D << std::endl;
         double B = C * TMath::Sqrt(TMath::Max(r2 - D * D, 0.0) / (1 + 2 * C * D));
+	if ( B > 1) B = 1.;
+	if ( B < -1) B = -1.;
+	//std::cout << "-> B: " << B << std::endl;
         double st = TMath::ASin(B) / C;
+	//std::cout << "-> st: " << st << std::endl;
         double ct = p(2) / pt;
+	//std::cout << "-> ct: " << ct << std::endl;
         double z0;
         double dot = x(0) * p(0) + x(1) * p(1);
         if (dot > 0.0) z0 = x(2) - ct * st;
         else z0 = x(2) + ct * st;
 
-        out.push_back(z0);
+	if(z0 != z0) {
+	  std::cout << "Attention: z0 is NaN ! z0 computed using: " << std::endl;
+	  std::cout << "-> a: " << a << std::endl;
+	  std::cout << "-> pt: " << pt << std::endl;
+	  std::cout << "-> C: " << C << std::endl;
+	  std::cout << "-> T: " << T << std::endl;
+	  std::cout << "-> D: " << std::setprecision(9) << D << std::endl; 
+	  std::cout << "-> fabs(B)-1: " << std::scientific << (B-1) << std::endl;
+	  std::cout << "-> st: " << st << std::endl;
+	  std::cout << "-> ct: " << ct << std::endl;
+	  out.push_back(-9.);
+	} else {
+	  out.push_back(z0);
+	}
+
       } else {
         out.push_back(-9.);
       }
